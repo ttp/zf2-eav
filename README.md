@@ -91,7 +91,7 @@ $attribute = $eav->getAttribute('title');
 echo $eav->getAttributeValue($product, $attribute);
 ```
 
-==Full example==
+## Full example
 Controller:
 ```php
 
