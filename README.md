@@ -1,5 +1,6 @@
 Zend Frawemork 2 EAV
 ====================
+Zend Framework Entity-Attribute-Value library.
 
 [What is EAV?](http://en.wikipedia.org/wiki/Entity-attribute-value_model)
 
