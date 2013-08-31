@@ -18,36 +18,35 @@ class Eav
     /*
      * Name of primary table
      */
-    protected $_entityTableName = 'eav_entity';
-    protected $_entityFieldId = 'id';
-    protected $_rowCacheFieldName = 'eav_attributes';
+    protected $_entitiesTableName = 'eav_entity';
+    protected $_entitiesTableFieldId = 'id';
 
     /*
      * Name of attribute table
      */
-    protected $_attributeTableName = 'eav_attribute';
-    protected $_attributeFieldId   = 'id';
-    protected $_attributeFieldType = 'type';
-    protected $_attributeFieldName = 'name';
+    protected $_attributesTableName = 'eav_attribute';
+    protected $_attributesTableFieldId   = 'id';
+    protected $_attributesTableFieldType = 'type';
+    protected $_attributesTableFieldName = 'name';
 
     /**
-     * Attributes model
+     * Attributes table
      * @var TableGateway
      */
-    protected $_attributeModel;
+    protected $_attributesTable;
     protected $_attributes;
 
     /*
-     * Eav model objects
+     * Eav TableGateway objects
      */
-    protected $_eavModels = array();
+    protected $_eavTables = array();
 
     public function  __construct(TableGateway $table)
     {
-        $this->_entityModel = $table;
-        $this->_entityTableName = $this->getTableName($table);
-        $this->_attributeModel = new TableGateway(
-            $this->_attributeTableName, $table->getAdapter(), new Feature\RowGatewayFeature('id'));
+        $this->_entitiesTable = $table;
+        $this->_entitiesTableName = $this->getTableName($table);
+        $this->_attributesTable = new TableGateway(
+            $this->_attributesTableName, $table->getAdapter(), new Feature\RowGatewayFeature('id'));
     }
 
     public function getTableName($table)
@@ -55,57 +54,62 @@ class Eav
         return $table->getTable();
     }
 
-    public function getEavTableName($type)
+    public function getTypeTableName($type)
     {
-        return $this->_entityTableName . '_' . strtolower($type);
+        return $this->_entitiesTableName . '_' . strtolower($type);
     }
 
-    public function getEavModel($attribute)
+    public function getTypeTable($attribute)
     {
         $type = $this->getAttributeType($attribute);
-        if (!isset($this->_eavModels[$type])) {
+        if (!isset($this->_eavTables[$type])) {
             $eavTable = new TableGateway(
-                $this->getEavTableName($type), $this->_entityModel->getAdapter(), new Feature\RowGatewayFeature('id'));
-            $this->_eavModels[$type] = $eavTable;
+                $this->getTypeTableName($type), $this->_entitiesTable->getAdapter(), new Feature\RowGatewayFeature('id'));
+            $this->_eavTables[$type] = $eavTable;
         }
 
-        return $this->_eavModels[$type];
+        return $this->_eavTables[$type];
     }
 
-    public function getEavModels($attributes)
+    public function getTypeTables($attributes)
     {
-        $models = array();
+        $tables = array();
         foreach ($attributes as $attribute) {
             $type = $this->getAttributeType($attribute);
-            if (!isset($models[$type])) {
-                $models[$type] = $this->getEavModel($attribute);
+            if (!isset($tables[$type])) {
+                $tables[$type] = $this->getTypeTable($attribute);
             }
         }
-        return $models;
+        return $tables;
     }
 
     public function getAttributeType($attribute)
     {
-        return $attribute->{$this->_attributeFieldType};
+        return $attribute->{$this->_attributesTableFieldType};
     }
 
     public function getAttributeId($attribute)
     {
-        return $attribute->{$this->_attributeFieldId};
+        return $attribute->{$this->_attributesTableFieldId};
     }
 
     public function getAttributeName($attribute)
     {
-        return $attribute->{$this->_attributeFieldName};
+        return $attribute->{$this->_attributesTableFieldName};
     }
 
     public function getEntityId($row)
     {
         if (is_array($row)) {
-            return $row[$this->_entityFieldId];
+            return $row[$this->_entitiesTableFieldId];
         } else {
-            return $row->{$this->_entityFieldId};
+            return $row->{$this->_entitiesTableFieldId};
         }
+    }
+
+    public function getAttributesTable()
+    {
+        return $this->_attributesTable;
     }
 
     public function getAttribute($id)
@@ -113,11 +117,11 @@ class Eav
         if (isset($this->_attributes[$id])) {
             return $this->_attributes[$id];
         } elseif (is_numeric($id)) {
-            $where = array($this->_attributeFieldId => $id);
-            $attribute = $this->_attributeModel->select($where)->current();
+            $where = array($this->_attributesTableFieldId => $id);
+            $attribute = $this->_attributesTable->select($where)->current();
         } else {
-            $where = array($this->_attributeFieldName => $id);
-            $attribute = $this->_attributeModel->select($where)->current();
+            $where = array($this->_attributesTableFieldName => $id);
+            $attribute = $this->_attributesTable->select($where)->current();
         }
         $this->cacheAttribute($attribute);
         return $attribute;
@@ -138,13 +142,13 @@ class Eav
 
     public function getValueRow($entityRow, $attributeRow)
     {
-        $eavModel = $this->getEavModel($attributeRow);
+        $typeTable = $this->getTypeTable($attributeRow);
         $attributeId = $this->getAttributeId($attributeRow);
         $where = array(
             'entity_id' => $this->getEntityId($entityRow),
             'attribute_id' => $attributeId
         );
-        return $eavModel->select($where)->current();
+        return $typeTable->select($where)->current();
     }
 
     /**
@@ -158,7 +162,7 @@ class Eav
      */
     public function getAttributeValue($row, $attribute, $valuesCache = null, $loadIfNotInCache = true)
     {
-        if (is_string($attribute)) {
+        if (is_string($attribute) || is_numeric($attribute)) {
             $attribute = $this->getAttribute($attribute);
         }
         $attributeId = $this->getAttributeId($attribute);
@@ -194,10 +198,10 @@ class Eav
         if (is_string($attribute)) {
             $attribute = $this->getAttribute($attribute);
         }
-        $eavModel = $this->getEavModel($attribute);
+        $typeTable = $this->getTypeTable($attribute);
         $valueRow = $this->getValueRow($entityRow, $attribute);
         if (!$valueRow) {
-            $valueRow = new RowGateway('id', $eavModel->getTable(), $eavModel->getAdapter());
+            $valueRow = new RowGateway('id', $typeTable->getTable(), $typeTable->getAdapter());
             $valueRow->attribute_id = $this->getAttributeId($attribute);
             $valueRow->entity_id = $this->getEntityId($entityRow);
         }
@@ -225,11 +229,11 @@ class Eav
             array_push($entityIds, $this->getEntityId($row));
         }
 
-        $eavModels = $this->getEavModels($attributes);
+        $typeTables = $this->getTypeTables($attributes);
 
         $queries = array();
-        foreach ($eavModels as $type => $eavModel) {
-            $select = $eavModel->getSql()->select();
+        foreach ($typeTables as $type => $typeTable) {
+            $select = $typeTable->getSql()->select();
             $select->where(array('entity_id' => $entityIds));
 
             $attributeIds = array();
@@ -239,13 +243,13 @@ class Eav
                 }
             }
             $select->where(array('attribute_id' => $attributeIds));
-            $queries[] = $select->getSqlString($eavModel->getAdapter()->getPlatform());
+            $queries[] = $select->getSqlString($typeTable->getAdapter()->getPlatform());
         }
 
         /* build query */
         $query = '(' . implode(') UNION ALL (', $queries) . ')';
 
-        $db = $this->_entityModel->getAdapter();
+        $db = $this->_entitiesTable->getAdapter();
         $valuesRows = $db->query($query, Adapter::QUERY_MODE_EXECUTE);
         $result = new ValuesCache();
         foreach ($valuesRows as $row) {

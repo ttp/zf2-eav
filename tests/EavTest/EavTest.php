@@ -21,7 +21,7 @@ class EavTest extends \DatabaseTestCase
     protected $_eav;
 
     /**
-     * Entity model
+     * Entity table
      * @var TableGateway
      * @access protected
      */
@@ -72,18 +72,18 @@ class EavTest extends \DatabaseTestCase
 
     public function testGetEavTableName()
     {
-        $this->assertEquals('eav_entity_int', $this->_eav->getEavTableName('int'));
-        $this->assertEquals('eav_entity_string', $this->_eav->getEavTableName('string'));
+        $this->assertEquals('eav_entity_int', $this->_eav->getTypeTableName('int'));
+        $this->assertEquals('eav_entity_string', $this->_eav->getTypeTableName('string'));
     }
 
-    public function testGetEavModel()
+    public function testGetEavTable()
     {
         $attribute = $this->_eav->getAttribute('secname');
-        $eavModel = $this->_eav->getEavModel($attribute);
-        $this->assertTrue($eavModel instanceof TableGateway);
+        $typeTable = $this->_eav->getTypeTable($attribute);
+        $this->assertTrue($typeTable instanceof TableGateway);
 
-        $tableName = $this->_eav->getEavTableName($attribute->type);
-        $this->assertEquals($tableName, $eavModel->getTable());
+        $tableName = $this->_eav->getTypeTableName($attribute->type);
+        $this->assertEquals($tableName, $typeTable->getTable());
     }
 
     public function testGetAttributeType()
