@@ -1,10 +1,13 @@
 Zend Frawemork 2 EAV
 ====================
+Zend Framework Entity-Attribute-Value library.
+
+[What is EAV?](http://en.wikipedia.org/wiki/Entity-attribute-value_model)
 
 ## Quick start
 
 ### Prepare tables
-For example if you have "products" table and you want to save EAV attributes for this table. Then create several tables where EAV attributes will be stored.
+For example if you have *products* table and you want to save EAV attributes for this table. Then create several tables where EAV attributes will be stored.
 Example:
   * products_int,
   * products_decimal
@@ -24,17 +27,19 @@ Also you should have table of attributes with next fields inside:
 
 The names of these fields do not necessarily have to be called as above. Here we have the names of fields by default. If you don't have such table then create it.
 
-Then create several records in the 'attributes' table
+Then create several records in the ```attributes``` table
 
-*attributes*
-|| *attribute_id* || *attribute_type* || *attribute_name* ||
-|| 1              || int              || quantity         ||
-|| 2              || string           || title            ||
-|| 3              || text             || description      ||
+```
+|  *attribute_id* | *attribute_type*  | *attribute_name* |
+| --------------- | ----------------- |------------------|
+| 1               | int               | quantity         |
+| 2               | string            | title            |
+| 3               | text              | description      |
+```
 
 
 ### Extends Eav
-You can specify the others names of required fields:
+You can specify the names of required fields:
 
 ```php
 use Eav\Eav;
