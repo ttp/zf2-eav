@@ -1,9 +1,20 @@
 {
+    "name": "ttp/zf2-eav",
+    "type": "library",
+    "description": "Zend Framework 2 EAV",
+    "keywords": ["zf2","eav"],
+    "homepage": "https://github.com/ttp/zf2-eav",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Taras Taday",
+            "email": "human.ttp@gmail.com",
+            "homepage": "https://github.com/ttp",
+            "role": "Developer"
+        }
+    ],
     "require": {
-        "zendframework/zend-db": "2.2.*",
-        "zendframework/zend-config": "2.2.*",
-        "phpunit/phpunit": "3.7.*",
-        "phpunit/dbunit": "1.2.*"
+        "zendframework/zend-db": "2.*"
     },
     "autoload": {
         "psr-0": {
