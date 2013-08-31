@@ -1,6 +1,8 @@
 Zend Frawemork 2 EAV
 ====================
 
+[What is EAV?](http://en.wikipedia.org/wiki/Entity-attribute-value_model)
+
 ## Quick start
 
 ### Prepare tables
@@ -36,7 +38,7 @@ Then create several records in the ```attributes``` table
 
 
 ### Extends Eav
-You can specify the others names of required fields:
+You can specify the names of required fields:
 
 ```php
 use Eav\Eav;
