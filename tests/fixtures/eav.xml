@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <table name="eav_entity">
+    <column>id</column>
+    <column>name</column>
+    <row>
+      <value>1</value>
+      <value>entity_one</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>entity_two</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>entity_three</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>entity_four</value>
+    </row>
+    
+  </table>
+
+  <table name="eav_attribute">
+    <column>id</column>
+    <column>type</column>
+    <column>name</column>
+    <column>label</column>
+    <row>
+      <value>1</value>
+      <value>string</value>
+      <value>secname</value>
+      <value>Secname</value>
+    </row>
+    <row>
+      <value>2</value>
+      <value>int</value>
+      <value>age</value>
+      <value>Age</value>
+    </row>
+    <row>
+      <value>3</value>
+      <value>decimal</value>
+      <value>points</value>
+      <value>Points</value>
+    </row>
+    <row>
+      <value>4</value>
+      <value>text</value>
+      <value>description</value>
+      <value>Description</value>
+    </row>
+  </table>
+  
+  <table name="eav_entity_string">
+      <column>id</column>
+      <column>entity_id</column>
+      <column>attribute_id</column>
+      <column>value</column>
+      <row>
+          <value>1</value>
+          <value>1</value>
+          <value>1</value>
+          <value>one secname</value>
+      </row>
+      <row>
+          <value>2</value>
+          <value>2</value>
+          <value>1</value>
+          <value>two secname</value>
+      </row>
+  </table>
+
+  <table name="eav_entity_int">
+      <column>id</column>
+      <column>entity_id</column>
+      <column>attribute_id</column>
+      <column>value</column>
+      <row>
+          <value>1</value>
+          <value>1</value>
+          <value>2</value>
+          <value>10</value>
+      </row>
+      <row>
+          <value>2</value>
+          <value>2</value>
+          <value>2</value>
+          <value>20</value>
+      </row>
+  </table>
+</dataset>

@@ -1,0 +1,13 @@
+{
+    "require": {
+        "zendframework/zend-db": "2.2.*",
+        "zendframework/zend-config": "2.2.*",
+        "phpunit/phpunit": "3.7.*",
+        "phpunit/dbunit": "1.2.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Eav\\": "src/"
+        }
+    }
+}
